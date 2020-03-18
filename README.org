@@ -1,0 +1,130 @@
+#+TITLE: My First Org-Mode APA Manuscript!
+#+OPTIONS: toc:nil num:nil ^:nil ':t
+#+LATEX_CLASS: apa6
+#+LATEX_CLASS_OPTIONS: [natbib,man]
+#+LATEX_HEADER:
+#+LATEX_HEADER: \threeauthors{author1}{author2}{author3}
+#+LATEX_HEADER: \threeaffiliations{affiliation1}{affiliation2}{affiliation3}
+#+LATEX_HEADER: \shorttitle{RUNNING HEAD GOES HERE}
+#+LATEX_HEADER: \usepackage{mathtools}
+#+LATEX_HEADER: \hypersetup{colorlinks,citecolor=black,linkcolor=black,urlcolor=blue}
+# #+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \input{abstract.tex}
+#+LATEX_HEADER_EXTRA:
+#+DESCRIPTION:
+#+KEYWORDS:
+#+SUBTITLE:
+#+LATEX_COMPILER: pdflatex
+#+DATE: \today
+
+If you don't see syntax highlighting in this file, then you should open it using emacs with org-mode installed. A singularity container with all the needed software is available at =library://dalejbarr/talklab/talklab-tidy:latest=. With this repository as your working directory, launch the container using
+
+#+begin_src sh :eval never :exports code
+singularity shell library://dalejbarr/talklab/talklab-tidy:latest
+#+end_src
+
+and then
+
+: emacs -q README.org
+
+to edit this file. (The =-q= option tells emacs not to load your local emacs config file, =~/.emacs=, which might conflict with the configuration in the container.) After you open the file, long lines, like this one, will not be wrapped by default.
+ Turn on line wrapping by typing =M-x= and then =visual-line-mode=.
+
+- Note that you can change LaTeX class options above from =man= to =doc= if you want a single-spaced document with embedded figures. 
+- Basic markdown text formatting: *bold*, /italics/, =monospace=.
+
+You can include a figure using a link, like so.
+
+#+CAPTION: This is not a pipe.
+#+NAME: fig:pipe
+[[file:pipe.png]]
+
+See Figure\nbsp{}[[fig:pipe]] for information.
+
+Citations look like this: see \cite{upper1974} for information about dealing with writer's block.
+
+* Method
+
+** Participants
+
+** Design
+
+** Apparatus
+
+* Results
+
+To include a graph:
+
+#+begin_src R :exports results :results output graphics file :file plot.png
+  plot(1:10, 1:10)
+#+end_src
+
+#+CAPTION: Results from the experiment.
+#+LABEL: fig:results
+#+RESULTS:
+[[file:plot.png]]
+
+Results are shown in Figure\nbsp{}[[fig:results]].
+
+Tables are automatically formatted when compiled to PDF, but if you need more flexibility, use the =xtable= package in a latex results environment.
+
+If you put your cursor inside of a code block and type =C-'=, that will open a code editor. You can then run the code interactively.
+
+#+begin_src R :exports both :results value :colnames yes
+  data.frame(col1 = 1:3, col2 = 2:4, col3 = 3:5)
+#+end_src
+
+#+CAPTION: This table was dynamically converted to LaTeX and has a manual caption. Reference using NAME plus link.
+#+NAME: tab:auto
+#+RESULTS:
+| col1 | col2 | col3 |
+|------+------+------|
+|    1 |    2 |    3 |
+|    2 |    3 |    4 |
+|    3 |    4 |    5 |
+
+The dynamically created table is Table\nbsp{}[[tab:auto]].
+
+#+begin_src R :exports results :results output latex :colnames yes
+  xtable::xtable(data.frame(col1 = 1:3, col2 = 2:4, col3 = 3:5),
+		 caption = "LaTeX version of the table created with xtable",
+		 label = "tab:latex")
+#+end_src
+
+#+RESULTS:
+#+begin_export latex
+% latex table generated in R 3.6.2 by xtable 1.8-4 package
+% Wed Mar 18 12:07:56 2020
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & col1 & col2 & col3 \\ 
+  \hline
+1 &   1 &   2 &   3 \\ 
+  2 &   2 &   3 &   4 \\ 
+  3 &   3 &   4 &   5 \\ 
+   \hline
+\end{tabular}
+\caption{LaTeX version of the table.} 
+\label{tab:latex}
+\end{table}
+#+end_export
+
+See Table\nbsp{}\ref{tab:latex} for the =xtable()= version. You have to reference this using LaTeX =\ref= syntax.
+
+You can also include math symbols directly like this \(Y = \beta_0 + \beta_1 X_i + e_i\), or by using a LaTeX environment.
+
+#+begin_export latex
+\begin{equation}
+\Sigma = \left(\begin{array}{cc}{\tau_{00}}^2 & \rho\tau_{00}\tau_{11} \\
+               \rho\tau_{00}\tau_{11} & {\tau_{11}}^2 \\
+         \end{array}\right)
+\end{equation}
+#+end_export
+
+* General Discussion
+
+Type =C-c C-e l p= to compile this document to pdf.
+
+\bibliography{refs.bib}
